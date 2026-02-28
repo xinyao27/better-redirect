@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 320px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        background: #0a0a0a;
+        color: #e5e5e5;
+        padding: 16px;
+      }
+
+      .header {
+        margin-bottom: 16px;
+      }
+      .header h1 {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .service-card {
+        background: #111;
+        border: 1px solid #1a1a1a;
+        border-radius: 0;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      .service-card:last-child {
+        margin-bottom: 0;
+      }
+
+      .service-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .service-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .service-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .service-desc {
+        font-size: 11px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #666;
+        margin-top: 6px;
+        padding-left: 0;
+      }
+
+      /* Toggle switch */
+      .toggle {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .toggle input {
+        display: none;
+      }
+      .toggle .slider {
+        position: absolute;
+        inset: 0;
+        background: #333;
+        border-radius: 0;
+        transition: background 0.2s;
+      }
+      .toggle .slider::before {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        left: 3px;
+        top: 3px;
+        background: #888;
+        border-radius: 0;
+        transition:
+          transform 0.2s,
+          background 0.2s;
+      }
+      .toggle input:checked + .slider {
+        background: #22c55e;
+      }
+      .toggle input:checked + .slider::before {
+        transform: translateX(16px);
+        background: #fff;
+      }
+
+      .service-details {
+        padding-left: 0;
+        margin-top: 10px;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid #1a1a1a;
+        margin: 10px 0;
+      }
+
+      label.field {
+        display: block;
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #555;
+        margin-bottom: 5px;
+      }
+
+      .host-row {
+        display: flex;
+        gap: 6px;
+      }
+
+      input[type="text"] {
+        flex: 1;
+        min-width: 0;
+        background: #141414;
+        border: 1px solid #222;
+        color: #e5e5e5;
+        font-size: 11px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        padding: 6px 8px;
+        border-radius: 0;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      input[type="text"]:focus {
+        border-color: #444;
+      }
+      input[type="text"]::placeholder {
+        color: #444;
+      }
+
+      .save-btn {
+        background: #1a1a1a;
+        border: 1px solid #222;
+        color: #999;
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        padding: 6px 10px;
+        border-radius: 0;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+      }
+      .save-btn:hover {
+        background: #222;
+        color: #e5e5e5;
+        border-color: #333;
+      }
+      .save-btn.saved {
+        color: #22c55e;
+        border-color: #22c55e33;
+      }
+
+      .mappings {
+        margin-top: 8px;
+      }
+      .mappings summary {
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #444;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .mappings summary::before {
+        content: "+ ";
+      }
+      .mappings[open] summary::before {
+        content: "- ";
+      }
+      .mappings .map-list {
+        margin-top: 6px;
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #555;
+        line-height: 1.8;
+      }
+      .mappings .from {
+        color: #666;
+      }
+      .mappings .arrow {
+        color: #333;
+        margin: 0 4px;
+      }
+      .mappings .to {
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Better Redirect</h1>
+    </div>
+
+    <div id="services"></div>
+
+    <script src="services.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

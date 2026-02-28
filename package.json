@@ -1,0 +1,14 @@
+{
+  "name": "better-redirect",
+  "private": true,
+  "scripts": {
+    "fmt": "oxfmt"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "oxfmt": "^0.35.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
