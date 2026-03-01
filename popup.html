@@ -226,6 +226,71 @@
       .mappings .to {
         color: #888;
       }
+
+      .blacklist {
+        margin-top: 8px;
+      }
+      .blacklist summary {
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #444;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .blacklist summary::before {
+        content: "+ ";
+      }
+      .blacklist[open] summary::before {
+        content: "- ";
+      }
+      .blacklist-add {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .blacklist-items {
+        margin-top: 6px;
+      }
+      .blacklist-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #888;
+        padding: 3px 0;
+        line-height: 1.6;
+      }
+      .blacklist-item .path {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .blacklist-item .remove-btn {
+        background: none;
+        border: none;
+        color: #555;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 0 2px;
+        flex-shrink: 0;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .blacklist-item .remove-btn:hover {
+        color: #ef4444;
+      }
+      .blacklist-empty {
+        font-size: 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: #333;
+        margin-top: 6px;
+      }
     </style>
   </head>
   <body>

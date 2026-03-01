@@ -1,6 +1,9 @@
 // Service configurations for Better Redirect
 // Each service defines redirect rules, allow lists, and display metadata.
-// Rule ID allocation: each service gets a 1000-ID range (base + 0~99 for allow, base + 100~999 for redirect).
+// Rule ID allocation: each service gets a 1000-ID range:
+//   base + 0~49: hardcoded allow list
+//   base + 50~99: user-defined blacklist (max 50 items)
+//   base + 100~999: redirect rules
 
 const SERVICES = {
   npmx: {

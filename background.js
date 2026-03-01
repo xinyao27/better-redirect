@@ -1,14 +1,28 @@
 importScripts("services.js");
 
 // Build DNR rules for a single service
-function buildServiceRules(config, host) {
+function buildServiceRules(config, host, blacklist) {
   const rules = [];
   const base = config.ruleIdBase;
 
-  // Allow rules (base + 0~99)
+  // Hardcoded allow rules (base + 0~49)
   config.allowList.forEach((path, i) => {
     rules.push({
       id: base + i,
+      priority: 5,
+      action: { type: "allow" },
+      condition: {
+        urlFilter: `||${config.sourceDomain}/${path}`,
+        resourceTypes: ["main_frame"],
+      },
+    });
+  });
+
+  // User blacklist allow rules (base + 50~99)
+  blacklist.forEach((path, i) => {
+    if (i >= 50) return;
+    rules.push({
+      id: base + 50 + i,
       priority: 5,
       action: { type: "allow" },
       condition: {
@@ -49,7 +63,8 @@ function syncAllRules() {
       const svc = stored[id] || {};
       if (svc.enabled === false) continue;
       const host = svc.host || config.defaultHost;
-      allRules.push(...buildServiceRules(config, host));
+      const blacklist = svc.blacklist || [];
+      allRules.push(...buildServiceRules(config, host, blacklist));
     }
 
     chrome.declarativeNetRequest.getDynamicRules((existing) => {
@@ -135,6 +150,70 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         syncAllRules();
         sendResponse({ ok: true });
       });
+    });
+    return true;
+  }
+
+  if (msg.type === "addBlacklistItem") {
+    if (!SERVICES[msg.serviceId]) {
+      sendResponse({ ok: false, error: "unknown service" });
+      return;
+    }
+    const path = (msg.path || "").trim().replace(/^\/+|\/+$/g, "");
+    if (!path) {
+      sendResponse({ ok: false, error: "empty path" });
+      return;
+    }
+    chrome.storage.local.get(["services"], (data) => {
+      const services = data.services || {};
+      if (!services[msg.serviceId]) {
+        services[msg.serviceId] = {
+          enabled: true,
+          host: SERVICES[msg.serviceId].defaultHost,
+        };
+      }
+      const list = services[msg.serviceId].blacklist || [];
+      if (list.includes(path)) {
+        sendResponse({ ok: false, error: "duplicate" });
+        return;
+      }
+      if (list.length >= 50) {
+        sendResponse({ ok: false, error: "limit reached (max 50)" });
+        return;
+      }
+      list.push(path);
+      services[msg.serviceId].blacklist = list;
+      chrome.storage.local.set({ services }, () => {
+        syncAllRules();
+        sendResponse({ ok: true });
+      });
+    });
+    return true;
+  }
+
+  if (msg.type === "removeBlacklistItem") {
+    if (!SERVICES[msg.serviceId]) {
+      sendResponse({ ok: false, error: "unknown service" });
+      return;
+    }
+    chrome.storage.local.get(["services"], (data) => {
+      const services = data.services || {};
+      if (!services[msg.serviceId]) {
+        sendResponse({ ok: true });
+        return;
+      }
+      const list = services[msg.serviceId].blacklist || [];
+      const idx = list.indexOf(msg.path);
+      if (idx !== -1) {
+        list.splice(idx, 1);
+        services[msg.serviceId].blacklist = list;
+        chrome.storage.local.set({ services }, () => {
+          syncAllRules();
+          sendResponse({ ok: true });
+        });
+      } else {
+        sendResponse({ ok: true });
+      }
     });
     return true;
   }
